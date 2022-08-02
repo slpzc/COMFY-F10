@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="./assets/css/f10.css">
+</head>
+
+<body>
+
+	<div id="app" v-if="active">
+		<div class="f10" :class='{rollBlur: rollSettings.winObject}'>
+			<div class="radial-linear"></div>
+			<div class="nav-header">
+				<ul class="menu">
+					<li class="nav__item" @click="changeStatus(element)" v-for="element in navElements"
+						:class="{ unique__item: element.unique, active: element.status }">
+						<img v-if="element.img" style="margin-right: 5px;" :src='element.img' alt=""> {{ element.title
+						}}
+					</li>
+				</ul>
+
+				<div class="menu-right">
+					<li class="nav__right__item">
+						<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path class="exit-m"
+								d="M0.346542 9.47249L1.92903 8.23123C1.89904 7.99122 1.87654 7.74748 1.87654 7.49998C1.87654 7.25248 1.89904 7.00874 1.92903 6.76873L0.34278 5.52747C0.200292 5.41497 0.159019 5.21247 0.25278 5.04748L1.75279 2.44874C1.84655 2.28747 2.04153 2.21997 2.21028 2.28747L4.07778 3.04122C4.46404 2.74496 4.88778 2.49374 5.34526 2.30249L5.62651 0.315C5.6603 0.138762 5.81404 0 6.00153 0H9.00151C9.189 0 9.34277 0.138762 9.37276 0.315L9.65401 2.30249C10.1115 2.49374 10.5353 2.74124 10.9215 3.04122L12.789 2.28747C12.9577 2.22374 13.1528 2.28747 13.2465 2.44874L14.7465 5.04748C14.8403 5.20875 14.799 5.41125 14.6565 5.52747L13.074 6.76873C13.104 7.00874 13.1265 7.25248 13.1265 7.49998C13.1265 7.74748 13.104 7.99122 13.074 8.23123L14.6565 9.47249C14.799 9.58499 14.8403 9.78749 14.7465 9.95248L13.2465 12.5512C13.1528 12.7125 12.9578 12.78 12.789 12.7125L10.9215 11.9587C10.5353 12.255 10.1115 12.5062 9.65405 12.6975L9.3728 14.685C9.34281 14.8612 9.18903 15 9.00155 15H6.00156C5.81407 15 5.6603 14.8612 5.63031 14.685L5.34906 12.6975C4.89157 12.5062 4.4678 12.2587 4.08157 11.9587L2.21408 12.7125C2.04533 12.7762 1.85032 12.7125 1.75659 12.5512L0.256577 9.95248C0.16278 9.79125 0.204055 9.58875 0.346542 9.47249ZM7.50154 10.125C8.95279 10.125 10.1265 8.95123 10.1265 7.49998C10.1265 6.04873 8.95279 4.87501 7.50154 4.87501C6.05029 4.87501 4.87653 6.04877 4.87653 7.50002C4.87653 8.95127 6.05029 10.125 7.50154 10.125Z"
+								fill="white" fill-opacity="0.1" />
+						</svg>
+					</li>
+
+					<li class="nav__right__item" @click="closeMenu()">
+						<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<g clip-path="url(#clip0_263:37)">
+								<path class="exit-m"
+									d="M15 1.76757L13.2324 0L7.49998 5.73241L1.76757 0L0 1.76757L5.73241 7.49998L0 13.2324L1.76757 15L7.49998 9.26759L13.2324 15L15 13.2324L9.26759 7.49998L15 1.76757Z"
+									fill="white" fill-opacity="0.1" />
+							</g>
+							<defs>
+								<clipPath id="clip0_263:37">
+									<rect width="15" height="15" fill="white" />
+								</clipPath>
+							</defs>
+						</svg>
+					</li>
+
+				</div>
+			</div>
+
+			<div class="f10-profile" v-if="currNav == 0">
+
+				<div class="f10-person-info">
+					<div class="f10-pers-stats">
+						<div class="person-lvl"> {{ userInfo[0].lvl }} </div>
+						<div class="nick-person">{{ userInfo[0].name }} <br> {{ userInfo[0].surname }}</div>
+						<div class="vip-person" v-if="userInfo[0].vip">GOLD VIP</div>
+					</div>
+
+					<div class="f10-pers-money">
+						<div class="money-box">
+							<p>Баланс на руках</p>
+							<h2>{{ userInfo[0].money }}$</h2>
+						</div>
+
+						<div class="money-box">
+							<p>Времени отыграно</p>
+							<h2>0 ч.</h2>
+						</div>
+
+						<div class="money-box">
+							<p>Баланс на карте</p>
+							<h2>{{ userInfo[0].bank }}$</h2>
+						</div>
+
+						<div class="money-box" v-if="userInfo[0].forbes[0].status">
+							<p>Место в Forbes</p>
+							<h2>{{ this.userInfo[0].forbes[0].seat }} место</h2>
+						</div>
+					</div>
+				</div>
+
+				<div class="person-skills">
+
+					<div class="arrow-up arrow-trans" @click="arrowDown" v-if='steep != 0'>
+						<img src="./assets/img/arrow.svg" alt="arrow">
+					</div>
+
+					<div class="person-static-skills" v-if="steep == 0">
+
+						<div class="person-static-header">Ваша статистика</div>
+
+						<div class="person-static-boxs">
+							<div class="person-skill-box">
+								<img class="ak47" src="assets/img/ak47.svg" alt="ak47">
+
+								<div class="skill-info">
+									<h5>Стрельба <b>65</b></h5>
+									<progress class="prog__bar" :value="userInfo[0].musc[0].gun" max="100"></progress>
+								</div>
+							</div>
+
+							<div class="person-skill-box">
+								<img class="driver" src="assets/img/car-skill.svg" alt="ak47">
+
+								<div class="skill-info">
+									<h5>Вождение <b>65</b></h5>
+									<progress class="prog__bar" :value="userInfo[0].musc[0].driver"
+										max="100"></progress>
+								</div>
+							</div>
+
+							<div class="person-skill-box">
+								<img class="driver" src="assets/img/speed.svg" alt="ak47">
+
+								<div class="skill-info">
+									<h5>Выносливость <b>65</b></h5>
+									<progress class="prog__bar" :value="userInfo[0].musc[0].eas" max="100"></progress>
+								</div>
+							</div>
+
+							<div class="person-skill-box">
+								<img class="driver" src="assets/img/coock.svg" alt="ak47">
+
+								<div class="skill-info">
+									<h5>Кулинария <b>65</b></h5>
+									<progress class="prog__bar" :value="userInfo[0].musc[0].cook" value="20"
+										max="100"></progress>
+								</div>
+							</div>
+
+							<div class="person-skill-box">
+								<img class="driver" src="assets/img/musc.svg" alt="ak47">
+
+								<div class="skill-info">
+									<h5>Сила <b>65</b></h5>
+									<progress class="prog__bar" :value="userInfo[0].musc[0].musc" max="100"></progress>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="person-static-skill" v-if="profileOptions.cars().show && profileOptions.cars().step == steep">
+						<div class="person-realty">
+							<div class="realty-header">
+								{{ userInfo[0].cars[0].carName }}
+							</div>
+
+							<div class="realyy-blocks">
+								<div class="realty-box">
+									<h5 class="realty__sub">Пробег</h5>
+									<h3 class="realty__item">{{ userInfo[0].cars[0].probeg }} км.</h3>
+								</div>
+
+								<div class="realty-box">
+									<h5 class="realty__sub">Стоимость</h5>
+									<h3 class="realty__item">{{ userInfo[0].cars[0].price }}$</h3>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="person-realty" v-if="userInfo[0].cars[1]">
+							<div class="realty-header">
+								{{ userInfo[0].cars[1].carName }}
+							</div>
+
+							<div class="realyy-blocks">
+								<div class="realty-box">
+									<h5 class="realty__sub">Пробег</h5>
+									<h3 class="realty__item">{{ userInfo[0].cars[1].probeg }} км.</h3>
+								</div>
+
+								<div class="realty-box">
+									<h5 class="realty__sub">Стоимость</h5>
+									<h3 class="realty__item">{{ userInfo[0].cars[1].price }}$</h3>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="person-static-skill" v-if="profileOptions.houses().show && profileOptions.houses().step == steep">
+						<div class="person-realty">
+							<div class="realty-header">
+								{{ userInfo[0].house[0].houseName }}
+							</div>
+
+							<div class="realyy-blocks">
+								<div class="realty-box">
+									<h5 class="realty__sub">Класс</h5>
+									<h3 class="realty__item">{{ userInfo[0].house[0].class }}.</h3>
+								</div>
+
+								<div class="realty-box">
+									<h5 class="realty__sub">Стоимость</h5>
+									<h3 class="realty__item">{{ userInfo[0].house[0].price }}$</h3>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="person-realty" v-if="userInfo[0].house[1]">
+							<div class="realty-header">
+								{{ userInfo[0].house[1].houseName }}
+							</div>
+
+							<div class="realyy-blocks">
+								<div class="realty-box">
+									<h5 class="realty__sub">Пробег</h5>
+									<h3 class="realty__item">{{ userInfo[0].house[1].class }}.</h3>
+								</div>
+
+								<div class="realty-box">
+									<h5 class="realty__sub">Стоимость</h5>
+									<h3 class="realty__item">{{ userInfo[0].house[1].price }}$</h3>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="arrow-up" @click="arrowUp" v-if='profileOptions.showArrow().step != steep'>
+						<img src="./assets/img/arrow.svg" alt="arrow">
+					</div>
+				</div>
+			</div>
+			<transition-group name='prize__fade'>
+				<div class="ruletka__overlay notXtypes!" :key='currNav'
+					v-if='rollSettings.winObject && !Array.isArray(rollSettings.winObject)'>
+					<div class="rultka__car__prev" :class="{redType: rollSettings.winObject.type === 4 || rollSettings.winObject.uid === 2, redT: rollSettings.winObject.type === 4, orangeT: rollSettings.winObject.type === 3, greenT: rollSettings.winObject.type === 2, grayT: rollSettings.winObject.type === 1}">
+						<img :src="getImgUrl(rollSettings.winObject.title)">
+						<p>Вы выиграли</p>
+						<b>{{rollSettings.winObject.name}}</b>
+						<b style="font-size:19px" v-if="rollSettings.winObject.count">{{rollSettings.winObject.count}}$</b>
+					</div>
+					<div class="rultka__win__buttons" v-if='rollSettings.winObject'>
+						<button class="win__button__roll" @click='prizeinteract(1)'>Забрать приз</button>
+					</div>
+				</div>
+
+				<div class="ruletka__overlay forXtypes" :key='steep'
+					v-if='rollSettings.winObject && Array.isArray(rollSettings.winObject)'>
+					
+						<div class="number__of__slide" >
+							<transition name="slide-fade" mode="out-in">
+								<div :key="rollSettings.activeSlide">
+								  {{ rollSettings.activeSlide + 1 }} 
+								</div>
+							  </transition>
+							<p> /{{rollSettings.winObject.length}}</p>
+						</div>
+					
+					<transition name='slides-trans'>
+						<div class="win__card">
+							<div class="rultka__car__prev" :class="{redType: rollSettings.winObject.type === 4}">
+								<img :src="getImgUrl(rollSettings.winObject.title)">
+								<p>Вы выиграли</p>
+								<b>{{rollSettings.winObject[rollOptions.howView].name}}</b>
+							</div>
+							<div class="rultka__win__buttons" v-if='rollSettings.winObject'>
+								<button class="win__button__roll"
+									@click='prizeinteract(1, rollSettings.winObject[rollOptions.howView])'>Забрать
+									приз</button>
+							</div>
+						</div>
+					</transition>
+				</div>
+			</transition-group>
+			<div class="fisting__ruletka" v-if='currNav == 1 || currNav == 6'>
+				<div class="ruletka__wrapp" v-if="currNav == 1">
+					<div class="ruletka__top" v-if="currNav == 1">
+						<p class='roll__el'>Баланс: <span>{{userInfo[0].coins}}
+								<svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+									xmlns="http://www.w3.org/2000/svg">
+									<circle cx="7.5" cy="7.5" r="7.5" fill="#8CFF9F" />
+									<path
+										d="M11.7051 8.75342C11.6755 9.39665 11.502 9.96582 11.1846 10.4609C10.8672 10.9518 10.4207 11.3327 9.84521 11.6035C9.27393 11.8743 8.62012 12.0098 7.88379 12.0098C6.66927 12.0098 5.71289 11.6141 5.01465 10.8228C4.31641 10.0314 3.96729 8.91423 3.96729 7.47119V7.01416C3.96729 6.10856 4.12386 5.31722 4.43701 4.64014C4.75439 3.95882 5.20931 3.43408 5.80176 3.06592C6.39421 2.69352 7.07975 2.50732 7.8584 2.50732C8.97982 2.50732 9.88118 2.80355 10.5625 3.396C11.2438 3.98421 11.631 4.79671 11.7241 5.8335H9.50244C9.48551 5.27067 9.34375 4.86654 9.07715 4.62109C8.81055 4.37565 8.4043 4.25293 7.8584 4.25293C7.30404 4.25293 6.89779 4.46029 6.63965 4.875C6.38151 5.28971 6.24609 5.95199 6.2334 6.86182V7.51562C6.2334 8.50163 6.35612 9.20622 6.60156 9.62939C6.85124 10.0526 7.27865 10.2642 7.88379 10.2642C8.39583 10.2642 8.78727 10.1436 9.05811 9.90234C9.32894 9.66113 9.47282 9.27816 9.48975 8.75342H11.7051Z"
+										fill="black" fill-opacity="0.8" />
+								</svg>
+							</span></p>
+						<b class='roll__el'>Рулетка Comfy</b>
+						<p class='roll__el'>Стоимость: <span>{{rollOptions.price}}</span><svg width="15" height="15"
+								viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="7.5" cy="7.5" r="7.5" fill="#8CFF9F" />
+								<path
+									d="M11.7051 8.75342C11.6755 9.39665 11.502 9.96582 11.1846 10.4609C10.8672 10.9518 10.4207 11.3327 9.84521 11.6035C9.27393 11.8743 8.62012 12.0098 7.88379 12.0098C6.66927 12.0098 5.71289 11.6141 5.01465 10.8228C4.31641 10.0314 3.96729 8.91423 3.96729 7.47119V7.01416C3.96729 6.10856 4.12386 5.31722 4.43701 4.64014C4.75439 3.95882 5.20931 3.43408 5.80176 3.06592C6.39421 2.69352 7.07975 2.50732 7.8584 2.50732C8.97982 2.50732 9.88118 2.80355 10.5625 3.396C11.2438 3.98421 11.631 4.79671 11.7241 5.8335H9.50244C9.48551 5.27067 9.34375 4.86654 9.07715 4.62109C8.81055 4.37565 8.4043 4.25293 7.8584 4.25293C7.30404 4.25293 6.89779 4.46029 6.63965 4.875C6.38151 5.28971 6.24609 5.95199 6.2334 6.86182V7.51562C6.2334 8.50163 6.35612 9.20622 6.60156 9.62939C6.85124 10.0526 7.27865 10.2642 7.88379 10.2642C8.39583 10.2642 8.78727 10.1436 9.05811 9.90234C9.32894 9.66113 9.47282 9.27816 9.48975 8.75342H11.7051Z"
+									fill="black" fill-opacity="0.8" />
+							</svg></p>
+					</div>
+					<div class="ruletka__main" v-if="currNav == 1">
+						<div class="roll__bar">
+							<div class="roll_svg">
+								<svg width="36" height="36" viewBox="0 0 36 36" fill="none"
+									xmlns="http://www.w3.org/2000/svg">
+									<path d="M1 22L2 16L6.80121 22H1Z" fill="#29412D" />
+									<path d="M35 22L34 16L29 22H35Z" fill="#29412D" />
+									<path d="M2.00049 15.9995L18 36L33.9995 15.9995L2.00049 15.9995Z" fill="#8CFF9F" />
+								</svg>
+
+							</div>
+							<div class="roll__items">
+								<div class="roll__roll" ref='goRoll'>
+									<div class="roll__item" v-for='(item, index) in rollSettings.rollItems' :key='index'
+										ref='rItem' :class='{ser: item.type == 1, green: item.type == 2, orange: item.type == 3, red: item.type == 4}'
+										
+										>
+										<div class="img__roll"
+											>
+											<img :src="getImgUrl(item.title)" alt="">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ruletka__x" v-if="currNav == 1"  >
+						<button class="roll__option" :class='{Xactive: rollSettings.rollX == 1}'
+							@click='rollSettings.rollX = 1'>1x</button>
+						<button class="roll__option" :class='{Xactive: rollSettings.rollX == 3}'
+							@click='rollSettings.rollX = 3'>3x</button>
+						<button class="roll__option" :class='{Xactive: rollSettings.rollX == 5}'
+							@click='rollSettings.rollX = 5'>5x</button>
+						<button class="roll__option" :class='{Xactive: rollSettings.rollX == 10}'
+							@click='rollSettings.rollX = 10'>10x</button>
+					</div>
+					<div class="ruletka__buttons" v-if="currNav == 1" >
+						<button class="roll__open__button" @click='RollOpen(1)'
+							:disabled='rollSettings.rolOpening || userInfo[0].coins < rollOptions.price'>Открыть
+							обычно</button>
+						<button class="roll__open__button" @click='RollOpen(2)'
+							:disabled='rollSettings.rolOpening || userInfo[0].coins < rollOptions.price'>Открыть
+							быстро</button>
+					</div>
+					<p class="toPrizes" @click="currNav = 6" v-if="currNav == 1">Инвентарь подарков</p>
+				</div>
+				<div class="ruletka__state" v-if="currNav == 6">
+					<div class="wrapper">
+						<div class="rol__nav">
+							<p @click="currNav = 1"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M14 4.5H2M2 4.5L5.5 1M2 4.5L5.5 8" stroke="white" stroke-opacity="0.25" stroke-width="1.5"/>
+							</svg>
+								Обратно в рулетку</p>
+							<b>Инвентарь подарков</b>
+							<p>Баланс: <span>1500</span></p>
+						</div>
+						<div class="items">
+							<div class="items__wrapp">
+								<div class="item" @click="interactItem(item)" v-for="(item, index) in rollStore" :key="item.id">
+									<div class="item__wrapper">
+										<div class="img"><img :src="getImgUrl(item.title)"></div>
+										<div class="txt">
+											<p>{{setNameItem(item.uid)}}</p>
+											<b>{{item.name}}</b>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="item__interact" v-if="modalInteract">
+							<div class="wrap">
+								<img :src="getImgUrl(modalInteract.title)" alt="">
+								<b>{{modalInteract.name}}</b>
+								<div class="buts">
+
+									<!----Ты заменяешь false на свою дрисню--->
+									<button @click="addToInventory(modalInteract)">Добавить в инвентарь</button>
+									<button v-if="modalInteract.price" @click="sellItem(modalInteract)">Продать за <span>{{modalInteract.price}}<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="7.5" cy="7.5" r="7.5" fill="#8CFF9F"/>
+<path d="M11.7051 8.75293C11.6755 9.39616 11.502 9.96533 11.1846 10.4604C10.8672 10.9513 10.4207 11.3322 9.84521 11.603C9.27393 11.8739 8.62012 12.0093 7.88379 12.0093C6.66927 12.0093 5.71289 11.6136 5.01465 10.8223C4.31641 10.0309 3.96729 8.91374 3.96729 7.4707V7.01367C3.96729 6.10807 4.12386 5.31673 4.43701 4.63965C4.75439 3.95833 5.20931 3.43359 5.80176 3.06543C6.39421 2.69303 7.07975 2.50684 7.8584 2.50684C8.97982 2.50684 9.88118 2.80306 10.5625 3.39551C11.2438 3.98372 11.631 4.79622 11.7241 5.83301H9.50244C9.48551 5.27018 9.34375 4.86605 9.07715 4.62061C8.81055 4.37516 8.4043 4.25244 7.8584 4.25244C7.30404 4.25244 6.89779 4.4598 6.63965 4.87451C6.38151 5.28923 6.24609 5.9515 6.2334 6.86133V7.51514C6.2334 8.50114 6.35612 9.20573 6.60156 9.62891C6.85124 10.0521 7.27865 10.2637 7.88379 10.2637C8.39583 10.2637 8.78727 10.1431 9.05811 9.90186C9.32894 9.66064 9.47282 9.27767 9.48975 8.75293H11.7051Z" fill="black" fill-opacity="0.8"/>
+</svg>
+</span></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="f10-forbs" v-if="currNav == 4">
+
+				<div class="f10-forbes-page">
+					<div class="person-static-header">Список Forbes</div>
+
+					<div class="f10-forbes-block">
+						<div class="f10-forbes-box"
+							:class="{ premium: forbersSort.indexOf(man) == 0, silver: forbersSort.indexOf(man) == 1,  bronze: forbersSort.indexOf(man) == 2 }"
+							v-for="(man, index) in forbersSort">
+							<div class="f10-forbs-box-inf">
+								<h3 class="f10-forbes__seat">{{ index + 1}}</h3>
+								<h3 class="f10-forbes__seat">{{man.name + ' ' + man.surname}} </h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="f10-forbs" v-if="currNav == 3">
+
+				<div class="f10-forbes-page">
+					<div class="person-static-header">Одежда</div>
+
+					<div class="clothes-block">
+
+						<div class="clothes-box" v-for="clothes in clothesAll">
+							<div class="clothes-header">
+								<div class="clothes-img">
+									<img :src="clothes.src" alt="">
+								</div>
+								<h3>{{ clothes.price }} <img class="coin-img" src="./assets/img/coin.svg" alt="svg">
+								</h3>
+							</div>
+
+							<div class="clothes-info">
+								<h3>{{ clothes.title }}</h3>
+								<p>{{ clothes.subTitle }}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="f10-help" v-if="currNav == 5">
+				<div class="f10-help-block">
+					<div class="help__block">
+						<h2 class="help__title">Помощь</h2>
+						<p class="help__subtitle">Здесь вы сможете написать
+							администратору и получить ответ
+							в ближайшее время</p>
+					</div>
+
+					<div class="help-success-block">
+						<p class="help__admin__title">Вопрос к администратору</p>
+						<textarea cols="30" rows="10" v-model="helpText"></textarea>
+
+						<div class="btn-success-help" @click="sendQuestionBtn()">Отправить</div>
+					</div>
+				</div>
+
+				<div class="f10-help-quests">
+					<h3 class="quest__item">Ваши вопросы, <br> на которые мы уже ответили</h3>
+
+					<div class="questions-all">
+						<div class="quest-box" v-for="quest in questionsAll">
+							<div class="quest-first-box">
+								<div class="quest-you">
+									<h3><span>Вы:</span> {{ quest.you }} </h3>
+								</div>
+
+								<div class="quest-you">
+									<h3 style="color:white"><span style="color: #E23D3D;">А:</span> {{ quest.he }} </h3>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="notify" v-if="notify[0].seen">
+				<div class="notify-blur-bg">
+					<div class="notify-text">
+						<div class="notify-status">
+							<img class="notify__status" :src='notify[0].src' alt="doone">
+						</div>
+
+						<h2 class="notify__title">{{ notify[0].status }}</h2>
+						<p class="notify__subtitle">{{ notify[0].title }}</p>
+						<div class="notify__close" @click="notify[0].seen = 0">Закрыть</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="./assets/js/vue.js"></script>
+<script src="./assets/js/f10.js"></script>
+</body>
+
+</html>
